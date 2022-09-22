@@ -1,0 +1,123 @@
+{
+	"name": "ExistsCustomerKey",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Customer_input_table",
+						"type": "DatasetReference"
+					},
+					"name": "Customer"
+				},
+				{
+					"dataset": {
+						"referenceName": "FactInternetSales_input_table",
+						"type": "DatasetReference"
+					},
+					"name": "factInternetSales"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Customer_Output",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "CustomerExists"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          CustomerKey as integer,",
+				"          GeographyKey as integer,",
+				"          CustomerAlternateKey as string,",
+				"          Title as string,",
+				"          FirstName as string,",
+				"          MiddleName as string,",
+				"          LastName as string,",
+				"          NameStyle as boolean,",
+				"          BirthDate as date,",
+				"          MaritalStatus as string,",
+				"          Suffix as string,",
+				"          Gender as string,",
+				"          EmailAddress as string,",
+				"          YearlyIncome as decimal(19,4),",
+				"          TotalChildren as integer,",
+				"          NumberChildrenAtHome as integer,",
+				"          EnglishEducation as string,",
+				"          SpanishEducation as string,",
+				"          FrenchEducation as string,",
+				"          EnglishOccupation as string,",
+				"          SpanishOccupation as string,",
+				"          FrenchOccupation as string,",
+				"          HouseOwnerFlag as string,",
+				"          NumberCarsOwned as integer,",
+				"          AddressLine1 as string,",
+				"          AddressLine2 as string,",
+				"          Phone as string,",
+				"          DateFirstPurchase as date,",
+				"          CommuteDistance as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> Customer",
+				"source(output(",
+				"          ProductKey as integer,",
+				"          OrderDateKey as integer,",
+				"          DueDateKey as integer,",
+				"          ShipDateKey as integer,",
+				"          CustomerKey as integer,",
+				"          PromotionKey as integer,",
+				"          CurrencyKey as integer,",
+				"          SalesTerritoryKey as integer,",
+				"          SalesOrderNumber as string,",
+				"          SalesOrderLineNumber as integer,",
+				"          RevisionNumber as integer,",
+				"          OrderQuantity as integer,",
+				"          UnitPrice as decimal(19,4),",
+				"          ExtendedAmount as decimal(19,4),",
+				"          UnitPriceDiscountPct as double,",
+				"          DiscountAmount as double,",
+				"          ProductStandardCost as decimal(19,4),",
+				"          TotalProductCost as decimal(19,4),",
+				"          SalesAmount as decimal(19,4),",
+				"          TaxAmt as decimal(19,4),",
+				"          Freight as decimal(19,4),",
+				"          CarrierTrackingNumber as string,",
+				"          CustomerPONumber as string,",
+				"          OrderDate as timestamp,",
+				"          DueDate as timestamp,",
+				"          ShipDate as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> factInternetSales",
+				"Customer, factInternetSales exists(Customer@CustomerKey == factInternetSales@CustomerKey,",
+				"     negate:false,",
+				"     broadcast: 'auto')~> CustomerExists",
+				"CustomerExists sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Column_1 as string,",
+				"          Column_2 as string",
+				"     ),",
+				"     partitionFileNames:['CustomerExists'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink1"
+			]
+		}
+	}
+}

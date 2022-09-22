@@ -1,0 +1,9 @@
+{
+	"name": "dbmohapatra-df",
+	"location": "eastus2",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "b2f7a468-688b-4e0c-bbc1-3e5ff7a65e8a",
+		"tenantId": "7eb7ab2d-e291-4c1a-80c4-6c3841946f4e"
+	}
+}
